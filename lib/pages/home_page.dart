@@ -12,12 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-
-  final List<Widget> _pages = [
-    const GalleryPage(),
-    const FavoritesPage(),
-    const SettingsPage(),
-  ];
+  bool _isDarkMode = false;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -25,27 +20,47 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _toggleTheme() {
+    setState(() {
+      _isDarkMode = !_isDarkMode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.photo_library),
-            label: 'Gallery',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+    // Update _pages dynamically to reflect the current theme mode.
+    final List<Widget> _pages = [
+      const GalleryPage(),
+      const FavoritesPage(),
+      SettingsPage(
+        toggleTheme: _toggleTheme,
+        isDarkMode: _isDarkMode,
+      ),
+    ];
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: _isDarkMode ? ThemeData.dark() : ThemeData.light(),
+      home: Scaffold(
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.photo_library),
+              label: 'Gallery',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Favorites',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+        ),
       ),
     );
   }
